@@ -1,26 +1,45 @@
 // Don Asier Cabo (que no Caba) Lodeiro y Hugo Gilsanz Ortellado
 #include <stdio.h>
 #include <stdlib.h>
-#define N 8
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <unistd.h>
 
-void sleep(){
-
-}
-
-void wakeup(){
-
-}
+#define N 8                 // Tamaño del buffer
+typedef struct {
+    char buffer[N];         // Cadena compartida de caracteres
+    int elementos;          // Número de elementos rellenados del buffer
+} SharedMemory;
 
 // Función que retira del buffer el caracter que corresponda y lo devuelve
-char remove_item(char* buffer){
+char remove_item(SharedMemory *shm){
+    char caracter = shm->buffer[--shm->elementos];
+    printf("[Consumidor] Extraído %c de posición %d\n", caracter, shm->elementos);
+    return caracter;
 }
 
-// Función que añade el caracter retirado del buffer a un string local (llama a remove_item())
-void consume_item(char* local){
+// Función que consume un caracter y lo imprime 
+void consume_item(char caracter){
+    printf("[Consumidor] Consumido: %c\n", caracter);
 }
 
 int main(int argc, char const *argv[])
 {
-    char* buffer;
+    // Abrir memoria compartida
+    int fd = shm_open("/shm_prodcons", O_RDWR, 0666);
+    SharedMemory *shm = mmap(NULL, sizeof(SharedMemory), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+    while (1) {
+        char c = remove_item(shm);
+        if (shm->elementos == N - 1) printf("[Consumidor] Despertando productor...\n");
+
+        consume_item(c);
+        sleep(2);  // Simulación de retraso
+
+        if (shm->elementos <= 0) {
+            printf("[Consumidor] Buffer vacío, esperando...\n");
+            while (shm->elementos <= 0) sleep(1);  // Espera activa
+        }
+    }
     return 0;
 }
