@@ -13,8 +13,10 @@ typedef struct {
 
 // Función que retira del buffer el caracter que corresponda y lo devuelve
 char remove_item(SharedMemory *shm){
-    char caracter = shm->buffer[--shm->elementos];
+    char caracter = shm->buffer[shm->elementos];
     printf("[Consumidor] Extraído %c de posición %d\n", caracter, shm->elementos);
+    sleep(1);
+    shm->elementos--;
     return caracter;
 }
 
@@ -31,14 +33,12 @@ int main(int argc, char const *argv[])
 
     while (1) {
         char c = remove_item(shm);
-        if (shm->elementos == N - 1) printf("[Consumidor] Despertando productor...\n");
 
-        consume_item(c);
-        sleep(2);  // Simulación de retraso
+        //consume_item(c);
 
         if (shm->elementos <= 0) {
             printf("[Consumidor] Buffer vacío, esperando...\n");
-            while (shm->elementos <= 0) sleep(1);  // Espera activa
+            while (shm->elementos <= 0);  // Espera activa
         }
     }
     return 0;

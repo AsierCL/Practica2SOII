@@ -19,8 +19,10 @@ char produce_item(){
 
 // Función que recibe un caracter y lo añade a la cadena pasada por referencia
 void insert_item(SharedMemory *shm, char caracter){
-    shm->buffer[shm->elementos++] = caracter;
-    printf("[Productor] Insertado %c en posición %d\n", caracter, shm->elementos - 1);
+    shm->buffer[shm->elementos] = caracter;
+    printf("[Productor] Insertado %c en posición %d\n", caracter, shm->elementos);
+    sleep(1);
+    shm->elementos++;
 }
 
 int main(int argc, char const *argv[]){
@@ -32,17 +34,14 @@ int main(int argc, char const *argv[]){
     SharedMemory *shm = mmap(NULL, sizeof(SharedMemory), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     
     shm->elementos = 0;  // Inicializa el contador de elementos
-
+    for(int i = 0; i < N; i++) shm->buffer[i] = '\0';
     while (1) {
         char c = produce_item();
         insert_item(shm, c);
         
-        if (shm->elementos == 1) printf("[Productor] Despertando consumidor...\n");
-        sleep(1);  // Simulación de retraso
-
         if (shm->elementos >= N) {
             printf("[Productor] Buffer lleno, esperando...\n");
-            while (shm->elementos >= N) sleep(1);  // Espera activa
+            while (shm->elementos >= N);  // Espera activa
         }
     }
 
