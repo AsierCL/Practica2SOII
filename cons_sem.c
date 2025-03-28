@@ -6,22 +6,23 @@
 #include <semaphore.h>
 #include <time.h>
 
-#define N 8                  // Tamaño del buffer
-#define LIM 60               // Número de iteraciones
+#define N 8                 // Tamaño del buffer
+#define LIM 60              // Número de iteraciones
 
 typedef struct {
-    char buffer[N];         // Cadena compartida de caracteres
+    char buffer[N];         // Cadena compartida< de caracteres
     int elementos;          // Número de elementos en el buffer
 } SharedMemory;
 
 // Función que retira del buffer el caracter que corresponda y lo devuelve
 char remove_item(SharedMemory *shm){
-    char caracter = shm->buffer[--shm->elementos];
+    char caracter = shm->buffer[shm->elementos];
     printf("[Consumidor] Extraído %c de posición %d\n", caracter, shm->elementos);
+    --shm->elementos;
     return caracter;
 }
 
-// Función que consume un caracter y lo imprime
+// Función que consume un caracter
 void consume_item(char caracter){
     printf("[Consumidor] Consumido: %c\n", caracter);
 }
@@ -48,7 +49,7 @@ int main(){
         sem_post(vacias);  // Incrementa los espacios vacíos
 
         consume_item(c);
-        sleep(rand() % 3); // Pausa aleatoria (0-2 seg) fuera de la región crítica
+        sleep(rand() % 4); // Pausa aleatoria (0-3 seg) fuera de la región crítica
     }
 
     // Liberar recursos
