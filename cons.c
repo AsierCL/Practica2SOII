@@ -18,7 +18,7 @@ int buff;
 // Función que retira del buffer el caracter que corresponda y lo devuelve
 char remove_item(SharedMemory *shm){
     char caracter = shm->buffer[shm->elementos];
-    printf("[Consumidor] Extraído %c de posición %d\n", caracter, shm->elementos);
+    printf("\033[1;34m[Consumidor] Extraído %c de posición %d\n", caracter, shm->elementos);
     /*  
     *   Facemos sleep entre o borrado e o decremento do contador  
     *   para que o proceso perda a CPU e aumentar a probabilidade de
@@ -38,7 +38,7 @@ void consume_item(char caracter){
         buffer_local[N]=caracter;
     }
 
-    printf("[Consumidor] Buffer local: %s\n", buffer_local);
+    printf("\033[1;34m[Consumidor] Buffer local: %s\n", buffer_local);
 }
 
 int main(int argc, char const *argv[]) {
@@ -56,7 +56,7 @@ int main(int argc, char const *argv[]) {
         consume_item(c);
 
         if (shm->elementos <= 0) {
-            printf("[Consumidor] Buffer vacío, esperando...\n");
+            printf("\033[1;34m[Consumidor] Buffer vacío, esperando...\n");
             while (shm->elementos <= 0);  // Espera activa
         }
     }

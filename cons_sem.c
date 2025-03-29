@@ -17,14 +17,14 @@ typedef struct {
 // Función que retira del buffer el caracter que corresponda y lo devuelve
 char remove_item(SharedMemory *shm){
     char caracter = shm->buffer[shm->elementos];
-    printf("[Consumidor] Extraído %c de posición %d\n", caracter, shm->elementos);
+    printf("\033[1;34m[Consumidor] Extraído %c de posición %d\n", caracter, shm->elementos);
     --shm->elementos;
     return caracter;
 }
 
 // Función que consume un caracter
 void consume_item(char caracter){
-    printf("[Consumidor] Consumido: %c\n", caracter);
+    printf("\033[1;34m[Consumidor] Consumido: %c\n", caracter);
 }
 
 int main(){

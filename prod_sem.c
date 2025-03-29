@@ -20,7 +20,7 @@ char produce_item(){
 
 void insert_item(SharedMemory *shm, char caracter){
     shm->buffer[shm->elementos] = caracter;
-    printf("[Productor] Insertado %c en posición %d\n", caracter, shm->elementos - 1);
+    printf("\033[1;33m[Productor] Insertado %c en posición %d\n", caracter, shm->elementos - 1);
     shm->elementos++;
 }
 

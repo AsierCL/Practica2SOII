@@ -23,14 +23,14 @@ char produce_item(){
     }else{
         buffer_local[N]=caracter;
     }
-    printf("[Productor] Buffer local: %s\n", buffer_local);
+    printf("\033[1;33m[Productor] Buffer local: %s\n", buffer_local);
     return caracter;
 }
 
 // Función que recibe un caracter y lo añade a la cadena pasada por referencia
 void insert_item(SharedMemory *shm, char caracter){
     shm->buffer[shm->elementos] = caracter;
-    printf("[Productor] Insertado %c en posición %d\n", caracter, shm->elementos);
+    printf("\033[1;33m[Productor] Insertado %c en posición %d\n", caracter, shm->elementos);
     /*  
     *   Facemos sleep entre a inserción e o aumento do contador  
     *   para que o proceso perda a CPU e aumentar a probabilidade de
@@ -63,7 +63,7 @@ int main(int argc, char const *argv[]){
         insert_item(shm, c);
         
         if (shm->elementos >= N) {
-            printf("[Productor] Buffer lleno, esperando...\n");
+            printf("\033[1;33m[Productor] Buffer lleno, esperando...\n");
             while (shm->elementos >= N);  // Espera activa
         }
     }
