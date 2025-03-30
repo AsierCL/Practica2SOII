@@ -58,13 +58,13 @@ void* productor(void* arg) {
         sleep(rand() % 4);  // Pausa aleatoria (0-3 segundos)
         char c = produce_item();
 
-        sem_wait(&vacias);
-        sem_wait(&mutex);
+        sem_wait(vacias);
+        sem_wait(mutex);
 
         insert_item(&shm, c);
 
-        sem_post(&mutex);   // Sale de la sección crítica
-        sem_post(&llenas);  // Indica que hay un elemento disponible
+        sem_post(mutex);   // Sale de la sección crítica
+        sem_post(llenas);  // Indica que hay un elemento disponible
     }
     pthread_exit(NULL);
 }
@@ -72,13 +72,13 @@ void* productor(void* arg) {
 // Hilo consumidor
 void* consumidor(void* arg) {
     for (int i = 0; i < LIM; i++) {
-        sem_wait(&llenas);
-        sem_wait(&mutex);
+        sem_wait(llenas);
+        sem_wait(mutex);
 
         char c = remove_item(&shm);
 
-        sem_post(&mutex);   // Sale de la sección crítica
-        sem_post(&vacias);  // Indica que hay un espacio vacío
+        sem_post(mutex);   // Sale de la sección crítica
+        sem_post(vacias);  // Indica que hay un espacio vacío
 
         consume_item(c);
         sleep(rand() % 4);  // Pausa aleatoria (0-3 segundos)
@@ -93,6 +93,9 @@ int main(){
     // Inicializar buffer_local a cadena vacía
     buffer_local[0] = '\0';
 
+    sem_unlink("/vacias");
+    sem_unlink("/llenas");
+    sem_unlink("/mutex");
     vacias = sem_open("/vacias", O_CREAT | O_EXCL, S_IRWXU, N);
     llenas = sem_open("/llenas", O_CREAT | O_EXCL, S_IRWXU, 0);
     mutex = sem_open("/mutex", O_CREAT | O_EXCL, S_IRWXU, 1);
