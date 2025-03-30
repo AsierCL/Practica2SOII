@@ -43,7 +43,7 @@ int main(){
     shm->elementos = 0;  // Inicializar buffer
 
     for (int i = 0; i < LIM; i++) {
-        sleep(rand() % 4);  // Pausa aleatoria (0-2 seg) fuera de la región crítica
+        sleep(rand() % 4);  // Pausa aleatoria (0-3 seg) fuera de la región crítica
         char c = produce_item();
 
         sem_wait(vacias);   // Decrementa espacios vacíos
