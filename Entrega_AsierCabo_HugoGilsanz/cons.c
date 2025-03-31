@@ -1,4 +1,3 @@
-// Don Asier Cabo (que no Caba) Lodeiro y Hugo Gilsanz Ortellado
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
